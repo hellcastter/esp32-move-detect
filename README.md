@@ -1,7 +1,7 @@
 # ESP32: Detect movements
 Detect movements on ESP32 using camera
 
-## Team <br>
+## Team
 Mentors:
 - Danylo Sahaidak
 - Bohdan Yavorivskiy
