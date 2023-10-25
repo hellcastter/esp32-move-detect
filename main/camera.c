@@ -5,21 +5,11 @@
 // =============================== SETUP ======================================
 
 // 1. Board setup (Uncomment):
-// #define BOARD_WROVER_KIT
-// #define BOARD_ESP32CAM_AITHINKER
+// #define BOARD_WROVER_KIT 1
+// #define BOARD_ESP32CAM_AITHINKER 1
 
 /**
- * 2. Kconfig setup
- *
- * If you have a Kconfig file, copy the content from
- *  https://github.com/espressif/esp32-camera/blob/master/Kconfig into it.
- * In case you haven't, copy and paste this Kconfig file inside the src directory.
- * This Kconfig file has definitions that allows more control over the camera and
- * how it will be initialized.
- */
-
-/**
- * 3. Enable PSRAM on sdkconfig:
+ * 2. Enable PSRAM (if you have one) using idf menuconfig or on sdkconfig:
  *
  * CONFIG_ESP32_SPIRAM_SUPPORT=y
  *
@@ -44,9 +34,6 @@
 #endif
 
 #include "esp_camera.h"
-
-#define BOARD_WROVER_KIT 1
-//#define BOARD_ESP32CAM_AITHINKER
 
 // WROVER-KIT PIN Map
 #ifdef BOARD_WROVER_KIT
