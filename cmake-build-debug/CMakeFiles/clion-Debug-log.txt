@@ -1,8 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/victormuryn/Desktop/ucu/poc/camera -B /Users/victormuryn/Desktop/ucu/poc/camera/cmake-build-debug
-CMake Error at CMakeLists.txt:7 (include):
-  include could not find requested file:
-
-    /tools/cmake/project.cmake
-
-
--- Configuring incomplete, errors occurred!

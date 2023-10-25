@@ -1,0 +1,6 @@
+build
+.vscode
+.PVS-Studio
+cmake-build-debug
+.idea
+.DS_Store
