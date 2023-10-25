@@ -4,3 +4,6 @@ build
 cmake-build-debug
 .idea
 .DS_Store
+sdkconfig
+sdkconfig.old
+dependencies.lock
