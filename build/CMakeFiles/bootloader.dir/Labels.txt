@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+/Users/victormuryn/Desktop/ucu/poc/camera/build/CMakeFiles/bootloader
+/Users/victormuryn/Desktop/ucu/poc/camera/build/CMakeFiles/bootloader.rule
+/Users/victormuryn/Desktop/ucu/poc/camera/build/CMakeFiles/bootloader-complete.rule
+/Users/victormuryn/Desktop/ucu/poc/camera/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/Users/victormuryn/Desktop/ucu/poc/camera/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/Users/victormuryn/Desktop/ucu/poc/camera/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/Users/victormuryn/Desktop/ucu/poc/camera/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/Users/victormuryn/Desktop/ucu/poc/camera/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/Users/victormuryn/Desktop/ucu/poc/camera/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/Users/victormuryn/Desktop/ucu/poc/camera/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
