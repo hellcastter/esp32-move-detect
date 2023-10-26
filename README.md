@@ -1,4 +1,4 @@
-# ESP32: Detect movements
+# ESP32: Detect movements ![example workflow](https://github.com/hellcastter/esp32-move-detect/actions/workflows/ci.yaml/badge.svg)
 Detect movements on ESP32 using camera
 
 ## Team

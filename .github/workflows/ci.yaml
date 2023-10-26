@@ -1,4 +1,4 @@
-name: ESP32 Camera CI
+name: Detect Move CI
 
 on:
   push:
