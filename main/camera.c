@@ -112,7 +112,7 @@ static camera_config_t camera_config = {
     .pin_pclk = CAM_PIN_PCLK,
 
     //XCLK 20MHz or 10MHz for OV2640 double FPS (Experimental)
-    .xclk_freq_hz = 20000000,
+    .xclk_freq_hz = 10000000,
     .ledc_timer = LEDC_TIMER_0,
     .ledc_channel = LEDC_CHANNEL_0,
 
@@ -152,6 +152,10 @@ void app_main(void)
 
         // use pic->buf to access the image
         ESP_LOGI(TAG, "Picture taken! Its size was: %zu bytes", pic->len);
+
+        for (size_t i = 0; i < pic->len; ++i) {
+            ESP_LOGI(TAG, "%zu", pic->buf[i]);
+        }
 
         esp_camera_fb_return(pic);
 
