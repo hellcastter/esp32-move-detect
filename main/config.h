@@ -1,13 +1,9 @@
-//
-// Created by Victor Muryn on 26.10.2023.
-//
-
 #ifndef CAMERA_CONFIG_H
 #define CAMERA_CONFIG_H
 
 // Chose your camera
 //#define BOARD_WROVER_KIT 1
-//#define BOARD_ESP32CAM_AITHINKER 1
+#define BOARD_ESP32CAM_AITHINKER 1
 
 #ifdef BOARD_WROVER_KIT
 

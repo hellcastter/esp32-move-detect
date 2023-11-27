@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 /**
  * This example takes a picture every 5s and print its size on serial monitor.
  */
@@ -5,8 +8,6 @@
 // =============================== SETUP ======================================
 
 // 1. Board setup (Uncomment):
-//#define BOARD_WROVER_KIT 1
-//#define BOARD_ESP32CAM_AITHINKER 1
 
 /**
  * 2. Enable PSRAM (if you have one) using idf menuconfig or on sdkconfig:
@@ -21,9 +22,6 @@
 
 #include <esp_log.h>
 #include <esp_system.h>
-//#include <nvs_flash.h>
-//#include <sys/param.h>
-//#include <string.h>
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -35,17 +33,13 @@
 
 #include "esp_camera.h"
 #include "config.h"
+#include "vector.h"
 
 static const char *TAG = "example:take_picture";
 
 #if ESP_CAMERA_SUPPORTED
 static camera_config_t camera_config = {
-        // DRAM or PSRAM
-#ifdef BOARD_WROVER_KIT
-    .fb_location = CAMERA_FB_IN_DRAM,
-#else
     .fb_location = CAMERA_FB_IN_PSRAM,
-#endif
 
     .pin_pwdn = CAM_PIN_PWDN,
     .pin_reset = CAM_PIN_RESET,
@@ -92,27 +86,115 @@ static esp_err_t init_camera(void)
 }
 #endif
 
+void save_to_array(const uint8_t* buf, uint8_t* array, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        array[i] = buf[i];
+    }
+}
+
+#define THRESHOLD 20
+#define WIDTH 240
+#define HEIGHT 320
+
+void findDifference(uint8_t* pic1, const uint8_t* pic2, const size_t size) {
+    for (size_t i = 0; i < size; ++i) {
+        pic1[i] = abs(pic1[i] - pic2[i]) > THRESHOLD ? 1 : 0;
+    }
+}
+
+// Define the neighbors array
+size_t neighbors[][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+// Define the dfs function
+void dfs(size_t x, size_t y, bool* visited, const uint8_t* picture, size_t* sizes) {
+    size_t index = y * WIDTH + x;
+
+    if (x < WIDTH && y < HEIGHT && !visited[index] && picture[index] == 1) {
+        visited[index] = 1;
+
+        sizes[0] = sizes[0] < x ? sizes[0] : x;
+        sizes[1] = sizes[1] < y ? sizes[1] : y;
+
+        sizes[2] = sizes[2] > x ? sizes[2] : x;
+        sizes[3] = sizes[3] > y ? sizes[3] : y;
+
+        for (size_t i = 0; i < 4; i++) {
+            size_t dx = neighbors[i][0];
+            size_t dy = neighbors[i][1];
+            dfs(x + dx, y + dy, visited, picture, sizes);
+        }
+    }
+}
+
+void findContours(const uint8_t* picture, const size_t size, Array** contours) {
+    bool *visited = calloc(size, sizeof(bool));
+
+    for (size_t i = 0; i < HEIGHT; ++i) {
+        for (size_t j = 0; j < WIDTH; ++j) {
+            size_t index = i * WIDTH + j;
+
+            if (picture[index] == 1 && !visited[index]) {
+                size_t* sizes = (size_t*)malloc(4 * sizeof(size_t));
+                sizes[0] = WIDTH;
+                sizes[1] = HEIGHT;
+                sizes[2] = 0;
+                sizes[3] = 0;
+//                        {WIDTH, HEIGHT, 0, 0};
+
+                // ESP_LOGI(TAG, "[APP] Free memory: %lu bytes", esp_get_free_heap_size());
+                insertItem(*contours, sizes);
+                dfs(j, i, visited, picture, sizes);
+            }
+        }
+    }
+
+    free(visited);
+}
+
+
 void app_main(void)
 {
-#if ESP_CAMERA_SUPPORTED
-    if(ESP_OK != init_camera()) {
+    if (ESP_OK != init_camera()) {
         return;
     }
+
+    size_t size = 76800;
+    uint8_t *prev_pic = NULL;
 
     while (1)
     {
         ESP_LOGI(TAG, "Taking picture...");
         camera_fb_t *pic = esp_camera_fb_get();
 
-        // use pic->buf to access the image
-        ESP_LOGI(TAG, "Picture taken! Its size was: %zu bytes", pic->len);
+        uint8_t *curr_pic = (uint8_t*) malloc(size * sizeof(uint8_t));
 
+        save_to_array(pic->buf, curr_pic, size);
         esp_camera_fb_return(pic);
+
+        // analysis
+        if (prev_pic != NULL) {
+            findDifference(prev_pic, curr_pic, size);
+
+            Array* contours;
+            arrayInit(&contours);
+
+            findContours(prev_pic, size, &contours);
+
+            ESP_LOGI(TAG, "%zu", contours->size);
+            ESP_LOGI(TAG, "[APP] Free memory: %lu bytes", esp_get_free_heap_size());
+
+
+            for (size_t i = 0; i < contours->size; ++i) {
+                ESP_LOGI(TAG, "%d %d %d %d", getItem(contours, i)[0], getItem(contours, i)[1], getItem(contours, i)[2], getItem(contours, i)[3]);
+                free(getItem(contours, i));
+            }
+
+            freeArray(contours);
+            free(prev_pic);
+        }
+
+        prev_pic = curr_pic;
 
         vTaskDelay(5000 / portTICK_RATE_MS);
     }
-#else
-    ESP_LOGE(TAG, "Camera support is not available for this chip");
-    return;
-#endif
 }

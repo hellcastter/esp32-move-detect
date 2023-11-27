@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "esp-idf/spiffs",
+		"source" : "/Users/victormuryn/esp/esp-idf/components/spiffs"
+	}
+}
