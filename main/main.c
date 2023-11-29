@@ -49,7 +49,6 @@ static esp_err_t init_camera(void)
         .pixel_format = PIXFORMAT_GRAYSCALE,
         .frame_size = FRAMESIZE_QQVGA,
 
-        .jpeg_quality = 10,
         .fb_count = 1,
         .grab_mode = CAMERA_GRAB_WHEN_EMPTY};//CAMERA_GRAB_LATEST. Sets when buffers should be filled
     esp_err_t err = esp_camera_init(&camera_config);
@@ -76,22 +75,53 @@ esp_err_t jpg_stream_httpd_handler(httpd_req_t *req){
         return res;
     }
 
+    // gets first image, to compare with
+    // later updates automaticaly
+    fb = esp_camera_fb_get();
+    uint8_t* prevFb = (uint8_t*)malloc(fb->len * sizeof(uint8_t));
+    memcpy(prevFb, fb->buf, fb->len);
+    esp_camera_fb_return(fb);
+
     while(true){
         fb = esp_camera_fb_get();
+
+        uint8_t threshold = 30;
+        for(size_t iter = 0; iter < fb->len; iter++){
+            // if (fb->buf[iter] > prevFb[iter]){
+            //     prevFb[iter] = fb->buf[iter];
+            //     fb->buf[iter] = fb->buf[iter] - prevFb[iter];
+            // } else if (fb->buf[iter] < prevFb[iter]){
+            //     prevFb[iter] = fb->buf[iter];
+            //     fb->buf[iter] = prevFb[iter] - fb->buf[iter];
+            // }
+
+            if (fb->buf[iter] > prevFb[iter] && fb->buf[iter] - prevFb[iter] > threshold){
+                prevFb[iter] = fb->buf[iter];
+                fb->buf[iter] = 255;
+            } else if (fb->buf[iter] < prevFb[iter] && prevFb[iter] - fb->buf[iter] > threshold){
+                prevFb[iter] = fb->buf[iter];
+                fb->buf[iter] = 255;
+            }
+
+            // } else {
+            //     prevFb[iter] = fb->buf[iter];
+            //     fb->buf[iter] = 0;
+            // }
+        }
+
         if (!fb) {
             ESP_LOGE(TAG, "Camera capture failed");
             res = ESP_FAIL;
             break;
         }
 
-        bool jpeg_converted = frame2bmp(fb, &_bmp_buf, &_bmp_buf_len);
-        if(!jpeg_converted){
+        bool bmp_converted = frame2bmp(fb, &_bmp_buf, &_bmp_buf_len);
+        if(!bmp_converted){
             ESP_LOGE(TAG, "BMP compression failed");
             esp_camera_fb_return(fb);
             res = ESP_FAIL;
         }
 
-        ESP_LOGI(TAG, "bmp_buf element is: %i", _bmp_buf[0]);
         if(res == ESP_OK){
             res = httpd_resp_send_chunk(req, _STREAM_BOUNDARY, strlen(_STREAM_BOUNDARY));
         }
@@ -103,9 +133,7 @@ esp_err_t jpg_stream_httpd_handler(httpd_req_t *req){
         if(res == ESP_OK){
             res = httpd_resp_send_chunk(req, (const char *)_bmp_buf, _bmp_buf_len);
         }
-        if(fb->format != PIXFORMAT_GRAYSCALE){
-            free(_bmp_buf);
-        }
+
         esp_camera_fb_return(fb);
         if(res != ESP_OK){
             break;
@@ -114,11 +142,17 @@ esp_err_t jpg_stream_httpd_handler(httpd_req_t *req){
         int64_t frame_time = fr_end - last_frame;
         last_frame = fr_end;
         frame_time /= 1000;
-        ESP_LOGI(TAG, "MBMP: %uKB %ums (%.1ffps)",
+        ESP_LOGI(TAG, "MBMP: %uKB %ums (%.1ffps) free mem:%u Kb",
             (uint16_t)(_bmp_buf_len/1024),
-            (uint16_t)frame_time, 1000.0 / (uint16_t)frame_time);
+            (uint16_t)frame_time,
+            1000.0 / (uint16_t)frame_time,
+            (uint16_t)(esp_get_free_heap_size()/1000));
+
+        free(_bmp_buf);
     }
 
+    free(prevFb);
+    free(_bmp_buf);
     last_frame = 0;
     return res;
 }
