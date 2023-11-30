@@ -13,10 +13,7 @@ Members:
 - Victor Muryn
 
 ## Used components
-- Board ESP32 (one of these):
-  - ESP-WROOM 32
-  - ESP32-CAM
-- Camera OV7670
+- Board: ESP32-CAM
 
 ## Installation
 Project uses esp32-camera library, so use this command to install library.
