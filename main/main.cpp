@@ -20,13 +20,13 @@ extern "C" {
 #define PART_BOUNDARY "123456789000000000000987654321"
 static const char* _STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char* _STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
+static const size_t _STREAM_LEN = strlen(_STREAM_BOUNDARY);
 static const char* _STREAM_PART = "Content-Type: image/bmp\r\nContent-Length: %u\r\n\r\n";
 
 #define CONFIG_XCLK_FREQ 20000000
 
 esp_err_t jpg_stream_httpd_handler(httpd_req_t *req) {
     auto processImage = ProcessorDifference();
-    processImage.setup();
 
     esp_err_t res = ESP_OK;
     size_t _bmp_buf_len;
@@ -43,33 +43,33 @@ esp_err_t jpg_stream_httpd_handler(httpd_req_t *req) {
         return res;
     }
 
+    auto fb = processImage.iterate();
+    frame2bmp(fb, &_bmp_buf, &_bmp_buf_len);
+    size_t hlen = snprintf((char *)part_buf, 64, _STREAM_PART, _bmp_buf_len);
+
     while (true) {
-        auto fb = processImage.iterate();
+        fb = processImage.iterate();
 
         bool bmp_converted = frame2bmp(fb, &_bmp_buf, &_bmp_buf_len);
-        if(!bmp_converted){
+        if (!bmp_converted) {
             ESP_LOGE(TAG, "BMP compression failed");
-            esp_camera_fb_return(fb);
             res = ESP_FAIL;
         }
 
-        if(res == ESP_OK){
-            res = httpd_resp_send_chunk(req, _STREAM_BOUNDARY, strlen(_STREAM_BOUNDARY));
+        if (res == ESP_OK) {
+            res = httpd_resp_send_chunk(req, _STREAM_BOUNDARY, _STREAM_LEN);
         }
 
-        if(res == ESP_OK){
-            size_t hlen = snprintf((char *)part_buf, 64, _STREAM_PART, _bmp_buf_len);
-
+        if (res == ESP_OK) {
             res = httpd_resp_send_chunk(req, (const char *)part_buf, hlen);
         }
-        if(res == ESP_OK){
+
+        if (res == ESP_OK) {
             res = httpd_resp_send_chunk(req, (const char *)_bmp_buf, _bmp_buf_len);
         }
 
-        esp_camera_fb_return(fb);
-        if(res != ESP_OK){
+        if (res != ESP_OK)
             break;
-        }
 
         int64_t fr_end = esp_timer_get_time();
         int64_t frame_time = fr_end - last_frame;
@@ -81,10 +81,10 @@ esp_err_t jpg_stream_httpd_handler(httpd_req_t *req) {
             1000.0 / (uint16_t)frame_time,
             (uint16_t)(esp_get_free_heap_size()/1000));
 
-        free(_bmp_buf);
+        delete _bmp_buf;
     }
 
-    free(_bmp_buf);
+    delete _bmp_buf;
     last_frame = 0;
     return res;
 }
@@ -111,7 +111,7 @@ httpd_handle_t setup_server()
 
 extern "C" void app_main(void)
 {
-    esp_err_t err;
+//    esp_err_t err;
 
     // Initialize NVS
     esp_err_t ret = nvs_flash_init();

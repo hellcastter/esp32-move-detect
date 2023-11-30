@@ -23,6 +23,8 @@ Camera::~Camera() {
         free_picture();
     }
 
+    delete frame;
+
     esp_camera_deinit();
 }
 

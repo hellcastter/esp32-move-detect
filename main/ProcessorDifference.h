@@ -14,13 +14,13 @@
 class ProcessorDifference: public Processor {
 private:
     uint8_t* prev;
-    size_t width;
-    size_t height;
-    size_t len;
-    Camera* cam;
+    size_t width{};
+    size_t height{};
+    size_t len{};
+    Camera cam = Camera(PIXFORMAT_GRAYSCALE, FRAMESIZE_QVGA);
     uint8_t threshold = 30;
 public:
-    void setup() override;
+    ProcessorDifference();
     camera_fb_t* iterate() override;
 
     ~ProcessorDifference() override;
