@@ -1,17 +1,26 @@
-#include "../components/WifiController.h"
+#include "WifiController.h"
+#include "WifiConfig.h"
 
-// class WifiController {
-    
-// }
 
-void WifiController::setUpConnection(wifi_config_t wifi_config) {
+
+void WifiController::setUpConnection(WifiConfig wifi_config) {
     // setup everything
-    connect_wifi();
+    conf_class = wifi_config;
+    connect_wifi( wifi_config.getConfig());
 }
 
-static void WifiController::event_handler(void *arg, esp_event_base_t event_base,
+void WifiController::event_handler(void *arg, esp_event_base_t event_base,
                             int32_t event_id, void *event_data)
 {
+    // int s_retry_num = S_RETRY_SUM;
+    int s_retry_num = conf_class.getRetryNum();
+    const char *TAG = conf_class.getWifiConfigTag();
+    int wifi_connect_status = conf_class.getWifiConnectStatus();
+    EventGroupHandle_t s_wifi_event_group = conf_class.getWifiEventGroup();
+    // int maximum_retry = WifiConfig::getMaxRetry();
+    // int s_retry_sum = WifiConfig::getSRetrySum();
+
+
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START)
     {
         esp_wifi_connect();
@@ -41,7 +50,7 @@ static void WifiController::event_handler(void *arg, esp_event_base_t event_base
     }
 }
 
-void WifiController::connect_wifi(void)
+void WifiController::connect_wifi(wifi_config_t wifi_config)
 {
     s_wifi_event_group = xEventGroupCreate();
 
@@ -66,16 +75,17 @@ void WifiController::connect_wifi(void)
                                                         NULL,
                                                         &instance_got_ip));
 
-    wifi_config_t wifi_config = {
-            .sta = {
-                    .ssid = WIFI_SSID,
-                    .password = WIFI_PASSWORD,
-                    /* Setting a password implies station will connect to all security modes including WEP/WPA.
-                        * However these modes are deprecated and not advisable to be used. Incase your Access point
-                        * doesn't support WPA2, these mode can be enabled by commenting below line */
-                    .threshold.authmode = WIFI_AUTH_WPA2_PSK,
-            },
-    };
+    // wifi_config_t wifi_config = {
+    //         .sta = {
+    //                 .ssid = WIFI_SSID,
+    //                 .password = WIFI_PASSWORD,
+    //                 /* Setting a password implies station will connect to all security modes including WEP/WPA.
+    //                     * However these modes are deprecated and not advisable to be used. Incase your Access point
+    //                     * doesn't support WPA2, these mode can be enabled by commenting below line */
+    //                 .threshold.authmode = WIFI_AUTH_WPA2_PSK,
+    //         },
+    // };
+    
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());

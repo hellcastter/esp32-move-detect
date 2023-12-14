@@ -13,6 +13,11 @@ extern "C" {
 #include "connect_wifi.h"
 }
 
+// added
+#include "WifiController.h"
+#include "WifiConfig.h"
+// added
+
 #include "ProcessorDifference.h"
 
 #define TAG "esp32-cam Webserver"
@@ -121,7 +126,12 @@ extern "C" void app_main(void)
         ret = nvs_flash_init();
     }
 
-    connect_wifi();
+    // changed
+    // connect_wifi();
+    WifiConfig wifiConfig;
+    WifiController a;
+    a.setUpConnection(wifiConfig);
+
 
     if (wifi_connect_status)
     {
