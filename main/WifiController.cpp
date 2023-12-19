@@ -52,7 +52,9 @@ void WifiController::event_handler(void *arg, esp_event_base_t event_base,
 
 void WifiController::connect_wifi(wifi_config_t wifi_config)
 {
-    s_wifi_event_group = xEventGroupCreate();
+    EventGroupHandle_t s_wifi_event_group = conf_class.getWifiEventGroup();
+    const char *TAG = conf_class.getWifiConfigTag();
+    // s_wifi_event_group = xEventGroupCreate();
 
     ESP_ERROR_CHECK(esp_netif_init());
 
@@ -75,16 +77,6 @@ void WifiController::connect_wifi(wifi_config_t wifi_config)
                                                         NULL,
                                                         &instance_got_ip));
 
-    // wifi_config_t wifi_config = {
-    //         .sta = {
-    //                 .ssid = WIFI_SSID,
-    //                 .password = WIFI_PASSWORD,
-    //                 /* Setting a password implies station will connect to all security modes including WEP/WPA.
-    //                     * However these modes are deprecated and not advisable to be used. Incase your Access point
-    //                     * doesn't support WPA2, these mode can be enabled by commenting below line */
-    //                 .threshold.authmode = WIFI_AUTH_WPA2_PSK,
-    //         },
-    // };
     
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));

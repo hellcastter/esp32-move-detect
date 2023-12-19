@@ -20,31 +20,18 @@
 
 
 // #define WIFI_AUTH_WPA2_PSK
-#define WIFI_SSID "your_ssid"
-#define WIFI_PASSWORD "your_password"
-#define WIFI_CONNECTED_BIT
-#define WIFI_FAIL_BIT
+#define WIFI_SSID "DmytroiPhone"
+#define WIFI_PASSWORD "plrst270"
+#define WIFI_CONNECTED_BIT BIT0
+#define WIFI_FAIL_BIT BIT1
 
 #define MAXIMUM_RETRY 5
 #define S_RETRY_SUM 5
-
-// int wifi_connect_status = 0;
-// static const char *TAG = "Connect_WiFi";
-// int s_retry_num = 0;
-// EventGroupHandle_t s_wifi_event_group;
-
 
 class WifiConfig {
 public:
     // Declare getConfig as inline
     inline static wifi_config_t getConfig() {
-//        wifi_config_t config = {
-//                .sta = {
-//                        .ssid = WIFI_SSID,
-//                        .password = WIFI_PASSWORD,
-//                        .threshold = {.authmode = WIFI_AUTH_WPA2_PSK}
-//                },
-//        };
         wifi_config_t config = {.sta = {}};
         strlcpy((char *)config.sta.ssid, WIFI_SSID, sizeof(config.sta.ssid));
         strlcpy((char *)config.sta.password, WIFI_PASSWORD, sizeof(config.sta.password));
@@ -74,7 +61,6 @@ public:
         return 5;
     }
 
-    // Getter for S_RETRY_SUM
     inline static int getSRetrySum() {
         return 5;
     }

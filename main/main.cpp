@@ -9,9 +9,9 @@
 #include "esp_timer.h"
 #include "esp_log.h"
 
-extern "C" {
-#include "connect_wifi.h"
-}
+// extern "C" {
+// #include "connect_wifi.h"
+// }
 
 // added
 #include "WifiController.h"
@@ -133,7 +133,7 @@ extern "C" void app_main(void)
     a.setUpConnection(wifiConfig);
 
 
-    if (wifi_connect_status)
+    if (wifiConfig.getWifiConnectStatus())
     {
         setup_server();
         ESP_LOGI(TAG, "ESP32 CAM Web Server is up and running\n");
