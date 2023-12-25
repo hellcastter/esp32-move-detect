@@ -21,7 +21,7 @@
 
 // #define WIFI_AUTH_WPA2_PSK
 #define WIFI_SSID "DmytroiPhone"
-#define WIFI_PASSWORD "plrst270"
+#define WIFI_PASSWORD ""
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT BIT1
 

@@ -27,6 +27,8 @@ private:
 public:
     static WifiConfig conf_class;
 
+    static EventGroupHandle_t s_wifi_event_group;
+
     // new method
     void setUpConnection(WifiConfig wifi_config);
 };

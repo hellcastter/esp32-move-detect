@@ -1,6 +1,8 @@
 #include "WifiController.h"
 #include "WifiConfig.h"
 
+// EventGroupHandle_t s_wifi_event_group;
+EventGroupHandle_t WifiController::s_wifi_event_group = xEventGroupCreate();
 
 
 void WifiController::setUpConnection(WifiConfig wifi_config) {
@@ -16,7 +18,7 @@ void WifiController::event_handler(void *arg, esp_event_base_t event_base,
     int s_retry_num = conf_class.getRetryNum();
     const char *TAG = conf_class.getWifiConfigTag();
     int wifi_connect_status = conf_class.getWifiConnectStatus();
-    EventGroupHandle_t s_wifi_event_group = conf_class.getWifiEventGroup();
+    // static EventGroupHandle_t s_wifi_event_group;
     // int maximum_retry = WifiConfig::getMaxRetry();
     // int s_retry_sum = WifiConfig::getSRetrySum();
 
@@ -52,7 +54,8 @@ void WifiController::event_handler(void *arg, esp_event_base_t event_base,
 
 void WifiController::connect_wifi(wifi_config_t wifi_config)
 {
-    EventGroupHandle_t s_wifi_event_group = conf_class.getWifiEventGroup();
+    // EventGroupHandle_t s_wifi_event_group = conf_class.getWifiEventGroup();
+    // static EventGroupHandle_t s_wifi_event_group;
     const char *TAG = conf_class.getWifiConfigTag();
     // s_wifi_event_group = xEventGroupCreate();
 
