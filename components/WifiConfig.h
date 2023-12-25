@@ -18,7 +18,6 @@
 #include <lwip/api.h>
 #include <lwip/netdb.h>
 
-
 // #define WIFI_AUTH_WPA2_PSK
 #define WIFI_SSID "DmytroiPhone"
 #define WIFI_PASSWORD ""

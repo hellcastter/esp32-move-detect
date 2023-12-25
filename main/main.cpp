@@ -40,7 +40,7 @@ esp_err_t jpg_stream_httpd_handler(httpd_req_t *req) {
     static int64_t last_frame = 0;
 
     if (!last_frame) {
-        last_frame = esp_timer_get_time();
+       last_frame = esp_timer_get_time();
     }
 
     res = httpd_resp_set_type(req, _STREAM_CONTENT_TYPE);
@@ -54,6 +54,8 @@ esp_err_t jpg_stream_httpd_handler(httpd_req_t *req) {
 
     while (true) {
         fb = processImage.iterate();
+
+        if (!fb) continue;
 
         bool bmp_converted = frame2bmp(fb, &_bmp_buf, &_bmp_buf_len);
         if (!bmp_converted) {
@@ -81,16 +83,14 @@ esp_err_t jpg_stream_httpd_handler(httpd_req_t *req) {
         last_frame = fr_end;
         frame_time /= 1000;
         ESP_LOGI(TAG, "MBMP: %uKB %ums (%.1ffps) free mem:%u Kb",
-            (uint16_t)(_bmp_buf_len/1024),
-            (uint16_t)frame_time,
-            1000.0 / (uint16_t)frame_time,
-            (uint16_t)(esp_get_free_heap_size()/1000));
+           (uint16_t)(_bmp_buf_len/1024),
+           (uint16_t)frame_time,
+           1000.0 / (uint16_t)frame_time,
+           (uint16_t)(esp_get_free_heap_size()/1000));
 
-        delete _bmp_buf;
+        free(_bmp_buf);
     }
 
-    delete _bmp_buf;
-    last_frame = 0;
     return res;
 }
 
@@ -100,6 +100,33 @@ httpd_uri_t uri_get = {
     .handler = jpg_stream_httpd_handler,
     .user_ctx = nullptr
 };
+
+void bla() {
+    auto processImage = ProcessorDifference();
+
+    static int64_t last_frame = 0;
+
+    if (!last_frame) {
+       last_frame = esp_timer_get_time();
+    }
+
+    camera_fb_t* fb;
+
+    while (true) {
+        fb = processImage.iterate();
+
+        if (!fb) continue;
+
+        int64_t fr_end = esp_timer_get_time();
+        int64_t frame_time = fr_end - last_frame;
+        last_frame = fr_end;
+        frame_time /= 1000;
+        ESP_LOGI(TAG, "%ums (%.1ffps) free mem:%u Kb",
+           (uint16_t)frame_time,
+           1000.0 / (uint16_t)frame_time,
+           (uint16_t)(esp_get_free_heap_size()/1000));
+    }
+}
 
 httpd_handle_t setup_server()
 {

@@ -16,6 +16,7 @@
 class Camera {
 private:
     camera_fb_t* frame = nullptr;
+    bool pictureTaken = false;
     camera_config_t camera_config = {
         .pin_pwdn  = CAM_PIN_PWDN,
         .pin_reset = CAM_PIN_RESET,
@@ -42,6 +43,7 @@ private:
         .fb_count = 1,
         .grab_mode = CAMERA_GRAB_WHEN_EMPTY
     };
+
 public:
     Camera(pixformat_t pixformat, framesize_t framesize);
     camera_fb_t* take_picture();
