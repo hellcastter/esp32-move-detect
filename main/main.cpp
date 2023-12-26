@@ -23,13 +23,15 @@ extern "C" {
 extern "C" void app_main(void)
 {
 //    esp_err_t err;
-    connect_wifi();
+    WifiConfig wifiConfig;
+    WifiController wifi;
+    wifi.setUpConnection(wifiConfig);
 
     if (wifi_connect_status)
     {
         Server server;
         ProcessorDifference proc;
-        server.add_url("/", &proc);
+        server.add_url(std::string("/"), proc);
         ESP_LOGI(TAG, "ESP32 CAM Web Server is up and running\n");
     }
     else

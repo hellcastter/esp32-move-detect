@@ -6,4 +6,3 @@ idf_component_register(SRCS
         "Server.cpp"
         INCLUDE_DIRS "."
 )
-
