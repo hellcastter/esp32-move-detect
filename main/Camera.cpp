@@ -24,11 +24,13 @@ Camera::~Camera() {
     }
 
     delete[] frame;
+    delete[] frame;
 
     esp_camera_deinit();
 }
 
 camera_fb_t *Camera::take_picture() {
+    if (pictureTaken) {
     if (pictureTaken) {
         free_picture();
     }
@@ -41,11 +43,11 @@ camera_fb_t *Camera::take_picture() {
     }
 
     pictureTaken = true;
-
     return frame;
 }
 
 void Camera::free_picture() {
     esp_camera_fb_return(frame);
+    pictureTaken = false;
     pictureTaken = false;
 }
