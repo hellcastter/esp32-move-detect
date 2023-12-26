@@ -15,6 +15,7 @@ extern "C" {
 
 #include "ProcessorDifference.h"
 #include "Server.h"
+#include "WifiController.h"
 
 #define TAG "esp32-cam Webserver"
 
@@ -23,13 +24,16 @@ extern "C" {
 extern "C" void app_main(void)
 {
 //    esp_err_t err;
-    connect_wifi();
+    WifiConfig wifiConfig;
+    WifiController wifi;
+    wifi.setUpConnection(wifiConfig);
 
     if (wifi_connect_status)
     {
         Server server;
         ProcessorDifference proc;
         server.add_url("/", &proc);
+
         ESP_LOGI(TAG, "ESP32 CAM Web Server is up and running\n");
     }
     else
