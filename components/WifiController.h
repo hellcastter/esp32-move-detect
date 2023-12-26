@@ -17,22 +17,20 @@
 #include <lwip/api.h>
 #include <lwip/netdb.h>
 
-extern int wifi_connect_status;
+#include "WifiCredits.h"
+
+#define WIFI_CONNECTED_BIT BIT0
+#define WIFI_FAIL_BIT BIT1
+#define MAXIMUM_RETRY 5
+#define S_RETRY_SUM 5
+#define TAG_WIFI "Connect_WiFi"
+
+void event_handler(void *arg, esp_event_base_t event_base,
+                   int32_t event_id, void *event_data);
 
 class WifiController {
-private:
-    void connect_wifi(void);
-    static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data);
 public:
-    bool wifi_connect_status;
-    static const char *TAG;
-    int s_retry_num;
-    EventGroupHandle_t s_wifi_event_group;
-    
-
-    // new method
-    void setUpConnection(wifi_config_t wifi_config);
-
+    WifiController();
 };
 
 #endif //ESP32_MOVE_DETECT_WIFICONTROLLER_H

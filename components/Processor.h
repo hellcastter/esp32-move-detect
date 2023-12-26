@@ -10,9 +10,7 @@
 
 class Processor {
 public:
-    Processor();
-    virtual camera_fb_t* iterate();
-    virtual ~Processor() = default;
+    virtual camera_fb_t* iterate() = 0;
 };
 
 #endif //MAIN_PROCESSOR_H

@@ -9,10 +9,6 @@
 #include "esp_timer.h"
 #include "esp_log.h"
 
-extern "C" {
-#include "connect_wifi.h"
-}
-
 #include "ProcessorDifference.h"
 #include "Server.h"
 #include "WifiController.h"
@@ -21,21 +17,22 @@ extern "C" {
 
 #define CONFIG_XCLK_FREQ 20000000
 
+extern bool wifi_connect_status;
+
 extern "C" void app_main(void)
-{
-//    esp_err_t err;
-    WifiConfig wifiConfig;
+{    
     WifiController wifi;
-    wifi.setUpConnection(wifiConfig);
 
     if (wifi_connect_status)
     {
         Server server;
-        ProcessorDifference proc;
-        server.add_url("/", &proc);
+        Processor* proc = new ProcessorDifference();
+        server.add_url("/", proc);
 
         ESP_LOGI(TAG, "ESP32 CAM Web Server is up and running\n");
+        ESP_LOGI(TAG, "%p\n", proc);
     }
-    else
+    else{
         ESP_LOGI(TAG, "Failed to connected with Wi-Fi, check your network Credentials\n");
+    }
 }

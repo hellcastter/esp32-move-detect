@@ -1,29 +1,7 @@
 #include "Server.h"
 
-Server::Server(){
-    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-    stream_httpd  = nullptr;
-
-    err = httpd_start(&stream_httpd, &config);
-}
-
-esp_err_t Server::add_url(char* name, Processor *processor) {
-    httpd_uri_t uri_get = {
-            .uri = name,
-            .method = HTTP_GET,
-            .handler = reinterpret_cast<esp_err_t (*)(httpd_req_t*)>(&Server::uri_handler),
-            .user_ctx = processor,
-    };
-
-    if (err == ESP_OK) {
-        httpd_register_uri_handler(stream_httpd, &uri_get);
-    }
-
-    return err;
-}
-
-esp_err_t Server::uri_handler(httpd_req_t *req){
-    Processor processImage = *static_cast<Processor*>(httpd_get_global_user_ctx(stream_httpd));
+esp_err_t uri_handler(httpd_req_t* req){
+    Processor* processImage = static_cast<Processor*>(req->user_ctx);
     
     esp_err_t res = ESP_OK;
     size_t _bmp_buf_len;
@@ -40,16 +18,17 @@ esp_err_t Server::uri_handler(httpd_req_t *req){
         return res;
     }
 
-    auto fb = processImage.iterate();
+    auto fb = processImage->iterate();
     frame2bmp(fb, &_bmp_buf, &_bmp_buf_len);
+
     size_t hlen = snprintf((char *)part_buf, 64, _STREAM_PART, _bmp_buf_len);
 
     while (true) {
-        fb = processImage.iterate();
+        fb = processImage->iterate();
 
         bool bmp_converted = frame2bmp(fb, &_bmp_buf, &_bmp_buf_len);
         if (!bmp_converted) {
-            ESP_LOGE(TAG, "BMP compression failed");
+            ESP_LOGE(SERVER_TAG, "BMP compression failed");
             res = ESP_FAIL;
         }
 
@@ -72,7 +51,7 @@ esp_err_t Server::uri_handler(httpd_req_t *req){
         int64_t frame_time = fr_end - last_frame;
         last_frame = fr_end;
         frame_time /= 1000;
-        ESP_LOGI(TAG, "MBMP: %uKB %ums (%.1ffps) free mem:%u Kb",
+        ESP_LOGI(SERVER_TAG, "MBMP: %uKB %ums (%.1ffps) free mem:%u Kb",
                  (uint16_t)(_bmp_buf_len/1024),
                  (uint16_t)frame_time,
                  1000.0 / (uint16_t)frame_time,
@@ -86,3 +65,25 @@ esp_err_t Server::uri_handler(httpd_req_t *req){
     return res;
 }
 
+Server::Server(){
+    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
+    stream_httpd = nullptr;
+
+    err = httpd_start(&stream_httpd, &config);
+}
+
+esp_err_t Server::add_url(char* name, Processor *processor) {
+    httpd_uri_t uri_get = {
+            .uri = name,
+            .method = HTTP_GET,
+            .handler = uri_handler,
+            // .handler = &uri_handler,
+            .user_ctx = processor,
+    };
+
+    if (err == ESP_OK) {
+        httpd_register_uri_handler(stream_httpd, &uri_get);
+    }
+
+    return err;
+}

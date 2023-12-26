@@ -2,11 +2,11 @@
 // Created by Victor Muryn on 29.11.2023.
 //
 
-#include "Processor.h"
+// #include "esp_log.h"
 
-Processor::Processor() = default;
+// Processor::Processor() = default;
 
-camera_fb_t* Processor::iterate() {
-    return nullptr;
-}
+// camera_fb_t* Processor::iterate() {
+//     return nullptr;
+// }
 

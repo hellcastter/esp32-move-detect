@@ -22,18 +22,17 @@ static const char* _STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
 static const size_t _STREAM_LEN = strlen(_STREAM_BOUNDARY);
 static const char* _STREAM_PART = "Content-Type: image/bmp\r\nContent-Length: %u\r\n\r\n";
 
-#ifndef TAG
-#define TAG "esp32-cam Webserver"
-#endif // TAG
+#define SERVER_TAG "Server"
 
 class Server {
 private:
     esp_err_t err;
     httpd_handle_t stream_httpd;
-    esp_err_t uri_handler(httpd_req_t *req);
 public:
     Server();
     esp_err_t add_url(char* name, Processor* processor);
 };
+
+esp_err_t uri_handler(httpd_req_t* req);
 
 #endif // ESP32_MOVE_DETECT_SERVER
