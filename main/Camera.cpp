@@ -31,7 +31,6 @@ Camera::~Camera() {
 
 camera_fb_t *Camera::take_picture() {
     if (pictureTaken) {
-    if (pictureTaken) {
         free_picture();
     }
 
@@ -48,6 +47,5 @@ camera_fb_t *Camera::take_picture() {
 
 void Camera::free_picture() {
     esp_camera_fb_return(frame);
-    pictureTaken = false;
     pictureTaken = false;
 }

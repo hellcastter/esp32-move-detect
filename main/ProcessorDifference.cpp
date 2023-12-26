@@ -68,6 +68,8 @@ camera_fb_t* ProcessorDifference::iterate() {
         if (!same[i]) {
             dfs(fb, i, true);
             i += r;
+        }
+    }
 
     if (!fb)
         return nullptr;
@@ -111,7 +113,6 @@ camera_fb_t* ProcessorDifference::iterate() {
 }
 
 ProcessorDifference::~ProcessorDifference() {
-    delete[] prev;
     delete[] prev;
 //    delete cam;
 }
