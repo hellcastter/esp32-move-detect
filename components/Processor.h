@@ -10,8 +10,9 @@
 
 class Processor {
 public:
-    Processor();
+    virtual void setup();
     virtual camera_fb_t* iterate();
+
     virtual ~Processor() = default;
 };
 

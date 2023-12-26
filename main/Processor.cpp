@@ -4,9 +4,11 @@
 
 #include "Processor.h"
 
-Processor::Processor() = default;
-
 camera_fb_t* Processor::iterate() {
     return nullptr;
+}
+
+void Processor::setup() {
+
 }
 
