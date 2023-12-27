@@ -18,14 +18,14 @@ private:
     size_t width{};
     size_t height{};
     size_t len{};
-    Camera cam = Camera(PIXFORMAT_GRAYSCALE, FRAMESIZE_QQVGA);
+    Camera* cam;
     uint8_t threshold = 70;
     int r = 5;
     bool* same;
 
     void dfs(camera_fb_t* fb, size_t pos, bool draw);
 public:
-    ProcessorDifference();
+    ProcessorDifference(Camera* camera);
     camera_fb_t* iterate() override;
 
     ~ProcessorDifference();

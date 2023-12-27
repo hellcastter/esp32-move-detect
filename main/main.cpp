@@ -27,10 +27,14 @@ extern "C" void app_main(void)
     if (wifi_connect_status)
     {
         Server server;
-        Processor* proc = new ProcessorDifference();
-        // Processor* procAvg = new ProcessorAverageDif(40);
-        server.add_url("/", proc);
-        // server.add_url("/", procAvg);
+
+        Camera* cam = new Camera(PIXFORMAT_GRAYSCALE, FRAMESIZE_QQVGA);
+        
+        Processor* proc = new ProcessorDifference(cam);
+        Processor* procAvg = new ProcessorAverageDif(cam);
+
+        server.add_url("/simple", proc);
+        server.add_url("/average", procAvg);
 
         ESP_LOGI(TAG, "ESP32 CAM Web Server is up and running\n");
     }

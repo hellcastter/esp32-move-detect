@@ -7,9 +7,10 @@
 
 const char* ProcessorDifferenceTAG = "ProcessorDifferenceTAG";
 
-ProcessorDifference::ProcessorDifference() {
+ProcessorDifference::ProcessorDifference(Camera *camera) {
+    cam = camera;
 
-    auto fb = cam.take_picture();
+    auto fb = cam->take_picture();
 
     prev = new uint8_t[fb->len];
     std::copy(fb->buf, fb->buf + fb->len, prev);
@@ -22,11 +23,11 @@ ProcessorDifference::ProcessorDifference() {
    
     ESP_LOGI(ProcessorDifferenceTAG, "ProcessorDifference was inited");
 
-    cam.free_picture();
+    cam->free_picture();
 }
 
 camera_fb_t* ProcessorDifference::iterate() {
-    auto fb = cam.take_picture();
+    auto fb = cam->take_picture();
 
     if (!fb)
         return nullptr;

@@ -11,8 +11,8 @@
 
 class ProcessorAverageDif: public virtual Processor {
 private:
-    Camera cam = Camera(PIXFORMAT_GRAYSCALE, FRAMESIZE_QQVGA);
-    uint8_t threshold;
+    Camera* cam;
+    uint8_t threshold = 70;
 
     size_t width;
     size_t height;
@@ -26,7 +26,7 @@ private:
     uint8_t averageValue(size_t pixIdx);
 
 public:
-    ProcessorAverageDif(uint8_t threshold);
+    ProcessorAverageDif(Camera* camera);
     camera_fb_t* iterate() override;
     ~ProcessorAverageDif();
 };

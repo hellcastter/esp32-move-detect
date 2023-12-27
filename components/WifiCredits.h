@@ -1,2 +1,2 @@
-#define WIFI_SSID "yourWifi"
-#define WIFI_PASSWORD "yourPassword"
+#define WIFI_SSID "Pixel_6a_Yura"
+#define WIFI_PASSWORD "GiveMeWiFi"
