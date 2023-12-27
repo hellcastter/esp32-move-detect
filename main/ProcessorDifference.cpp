@@ -3,23 +3,23 @@
 //
 
 #include <algorithm>
-#include <algorithm>
 #include "ProcessorDifference.h"
 
 const char* ProcessorDifferenceTAG = "ProcessorDifferenceTAG";
 
 ProcessorDifference::ProcessorDifference() {
+
     auto fb = cam.take_picture();
 
     prev = new uint8_t[fb->len];
     std::copy(fb->buf, fb->buf + fb->len, prev);
-
+    
     width = fb->width;
     height = fb->height;
     len = fb->len;
 
     same = new bool[fb->len];
-
+   
     ESP_LOGI(ProcessorDifferenceTAG, "ProcessorDifference was inited");
 
     cam.free_picture();
@@ -73,7 +73,7 @@ camera_fb_t* ProcessorDifference::iterate() {
 
 ProcessorDifference::~ProcessorDifference() {
     delete[] prev;
-//    delete cam;
+    delete[] same;
 }
 
 void ProcessorDifference::dfs(camera_fb_t *fb, size_t orPos, bool draw) {

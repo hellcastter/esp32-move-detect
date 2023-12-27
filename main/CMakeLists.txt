@@ -3,6 +3,7 @@ idf_component_register(SRCS
         "Server.cpp"
         "Camera.cpp"
         "ProcessorDifference.cpp"
+        "ProcessorAverageDif.cpp"
         "WifiController.cpp"
 
         INCLUDE_DIRS "."
