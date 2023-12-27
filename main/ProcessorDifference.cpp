@@ -1,8 +1,6 @@
 //
 // Created by Victor Muryn on 29.11.2023.
 //
-
-#include <algorithm>
 #include "ProcessorDifference.h"
 
 const char* ProcessorDifferenceTAG = "ProcessorDifferenceTAG";

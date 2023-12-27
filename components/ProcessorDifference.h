@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <cstring>
 #include <queue>
+#include <algorithm>
 
 
 class ProcessorDifference: public virtual Processor {

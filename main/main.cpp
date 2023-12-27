@@ -11,6 +11,7 @@
 
 #include "ProcessorDifference.h"
 #include "ProcessorAverageDif.h"
+#include "ProcessorMedianDif.h"
 #include "Server.h"
 #include "WifiController.h"
 
@@ -32,9 +33,11 @@ extern "C" void app_main(void)
         
         Processor* proc = new ProcessorDifference(cam);
         Processor* procAvg = new ProcessorAverageDif(cam);
+        Processor* procMed = new ProcessorMedianDif(cam);
 
         server.add_url("/simple", proc);
         server.add_url("/average", procAvg);
+        server.add_url("/median", procMed);
 
         ESP_LOGI(TAG, "ESP32 CAM Web Server is up and running\n");
     }
