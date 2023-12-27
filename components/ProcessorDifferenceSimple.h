@@ -2,8 +2,8 @@
 // Created by Victor Muryn on 29.11.2023.
 //
 
-#ifndef MAIN_PROCESSORDIFFERENCE_H
-#define MAIN_PROCESSORDIFFERENCE_H
+#ifndef MAIN_PROCESSORDIFFERENCESIMPLE_H
+#define MAIN_PROCESSORDIFFERENCESIMPLE_H
 
 #include "Processor.h"
 #include "Camera.h"
@@ -12,24 +12,18 @@
 #include <queue>
 
 
-class ProcessorDifference: public virtual Processor {
+class ProcessorDifferenceSimple: public virtual Processor {
 private:
     uint8_t* prev;
-    size_t width{};
-    size_t height{};
-    size_t len{};
     Camera* cam;
-    uint8_t threshold = 70;
-    int r = 5;
-    bool* same;
+    uint8_t threshold = 100;
 
-    void dfs(camera_fb_t* fb, size_t pos, bool draw);
 public:
-    ProcessorDifference(Camera* camera);
+    ProcessorDifferenceSimple(Camera* camera);
     camera_fb_t* iterate() override;
 
-    ~ProcessorDifference();
+    ~ProcessorDifferenceSimple();
 };
 
 
-#endif //MAIN_PROCESSORDIFFERENCE_H
+#endif //MAIN_PROCESSORDIFFERENCESIMPLE_H
