@@ -19,7 +19,7 @@ private:
     size_t height{};
     size_t len{};
     Camera cam = Camera(PIXFORMAT_GRAYSCALE, FRAMESIZE_QQVGA);
-    uint8_t threshold = 100;
+    uint8_t threshold = 70;
     int r = 5;
     bool* same;
 

@@ -24,7 +24,6 @@ Camera::~Camera() {
     }
 
     delete[] frame;
-    delete[] frame;
 
     esp_camera_deinit();
 }

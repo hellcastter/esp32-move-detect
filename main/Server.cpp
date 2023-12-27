@@ -18,13 +18,8 @@ esp_err_t uri_handler(httpd_req_t* req){
         return res;
     }
 
-    auto fb = processImage->iterate();
-    frame2bmp(fb, &_bmp_buf, &_bmp_buf_len);
-
-    size_t hlen = snprintf((char *)part_buf, 64, _STREAM_PART, _bmp_buf_len);
-
     while (true) {
-        fb = processImage->iterate();
+        auto fb = processImage->iterate();
 
         bool bmp_converted = frame2bmp(fb, &_bmp_buf, &_bmp_buf_len);
         if (!bmp_converted) {
@@ -37,6 +32,8 @@ esp_err_t uri_handler(httpd_req_t* req){
         }
 
         if (res == ESP_OK) {
+            size_t hlen = snprintf((char *)part_buf, 64, _STREAM_PART, _bmp_buf_len);
+
             res = httpd_resp_send_chunk(req, (const char *)part_buf, hlen);
         }
 
@@ -44,6 +41,7 @@ esp_err_t uri_handler(httpd_req_t* req){
             res = httpd_resp_send_chunk(req, (const char *)_bmp_buf, _bmp_buf_len);
         }
 
+        esp_camera_fb_return(fb);
         if (res != ESP_OK)
             break;
 

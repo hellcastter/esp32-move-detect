@@ -3,30 +3,23 @@
 //
 
 #include <algorithm>
-#include <algorithm>
 #include "ProcessorDifference.h"
 
 const char* ProcessorDifferenceTAG = "ProcessorDifferenceTAG";
 
 ProcessorDifference::ProcessorDifference() {
+
     auto fb = cam.take_picture();
 
     prev = new uint8_t[fb->len];
     std::copy(fb->buf, fb->buf + fb->len, prev);
-    prev = new uint8_t[fb->len];
-    std::copy(fb->buf, fb->buf + fb->len, prev);
-
+    
     width = fb->width;
     height = fb->height;
     len = fb->len;
 
     same = new bool[fb->len];
-    width = fb->width;
-    height = fb->height;
-    len = fb->len;
-
-    same = new bool[fb->len];
-
+   
     ESP_LOGI(ProcessorDifferenceTAG, "ProcessorDifference was inited");
 
     cam.free_picture();
@@ -63,58 +56,20 @@ camera_fb_t* ProcessorDifference::iterate() {
         }
     }
 
-    // n^2
+    // group all changed groups and display them
     for (size_t i = 0; i < len; i += 1) {
         if (!same[i]) {
             dfs(fb, i, true);
             i += r;
         }
     }
-
-    if (!fb)
-        return nullptr;
-
-    memset(same, true, fb->len);
-
-    for (size_t iter = 0; iter < fb->len; ++iter) {
-        if ( (fb->buf[iter] > prev[iter] && fb->buf[iter] - prev[iter] > threshold) ||
-             (fb->buf[iter] < prev[iter] && prev[iter] - fb->buf[iter] > threshold) ) {
-            for (int i = -r; i <= r; ++i) {
-                for (int j = -r; j <= r; ++j) {
-                    if (iter + i * width + j < len)
-                        same[iter + i * width + j] = false;
-                    
-                }
-            }
-        }
-
-        prev[iter] = fb->buf[iter];
-    }
-
-    // n^2
-    for (size_t i = 0; i < len; i += 1) {
-        if (!same[i]) {
-            dfs(fb, i, false);
-            i += r;
-        }
-    }
-
-    // n^2
-    for (size_t i = 0; i < len; i += 1) {
-        if (!same[i]) {
-            dfs(fb, i, true);
-            i += r;
-        }
-    }
-
-    cam.free_picture();
 
     return fb;
 }
 
 ProcessorDifference::~ProcessorDifference() {
     delete[] prev;
-//    delete cam;
+    delete[] same;
 }
 
 void ProcessorDifference::dfs(camera_fb_t *fb, size_t orPos, bool draw) {
