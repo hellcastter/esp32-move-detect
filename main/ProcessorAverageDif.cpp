@@ -19,7 +19,6 @@ ProcessorAverageDif::ProcessorAverageDif(Camera* camera){
     height = fb->height;
     len = fb->len;
 
-    same = new bool[fb->len];
     cam->free_picture();
 
     ESP_LOGI(AvgDifTAG, "Processor was initialized");
@@ -29,7 +28,6 @@ ProcessorAverageDif::~ProcessorAverageDif() {
     for(size_t iter = 0; iter < LAST_FRAMES_NUM; iter++){
         free(prev[iter]);
     }
-    free(same);
 }
 
 uint8_t ProcessorAverageDif::averageValue(size_t pixIdx){
@@ -45,8 +43,6 @@ camera_fb_t* ProcessorAverageDif::iterate(){
 
     if (!fb)
         return nullptr;
-
-    memset(same, true, fb->len);
 
     for (size_t iter = 0; iter < fb->len; ++iter) {
         uint8_t background = averageValue(iter);

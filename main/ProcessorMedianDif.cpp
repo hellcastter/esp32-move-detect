@@ -19,7 +19,6 @@ ProcessorMedianDif::ProcessorMedianDif(Camera* camera){
     height = fb->height;
     len = fb->len;
 
-    same = new bool[fb->len];
     cam->free_picture();
 
     ESP_LOGI(MedDifTAG, "Processor was initialized");
@@ -29,7 +28,6 @@ ProcessorMedianDif::~ProcessorMedianDif() {
     for(size_t iter = 0; iter < LAST_FRAMES_NUM; iter++){
         free(prev[iter]);
     }
-    free(same);
 }
 
 uint8_t ProcessorMedianDif::medianValue(size_t pixIdx){
@@ -56,8 +54,6 @@ camera_fb_t* ProcessorMedianDif::iterate(){
 
     if (!fb)
         return nullptr;
-
-    memset(same, true, fb->len);
 
     for (size_t iter = 0; iter < fb->len; ++iter) {
         uint8_t background = medianValue(iter);
