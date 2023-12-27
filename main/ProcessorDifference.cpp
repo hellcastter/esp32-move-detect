@@ -13,14 +13,7 @@ ProcessorDifference::ProcessorDifference() {
 
     prev = new uint8_t[fb->len];
     std::copy(fb->buf, fb->buf + fb->len, prev);
-    prev = new uint8_t[fb->len];
-    std::copy(fb->buf, fb->buf + fb->len, prev);
 
-    width = fb->width;
-    height = fb->height;
-    len = fb->len;
-
-    same = new bool[fb->len];
     width = fb->width;
     height = fb->height;
     len = fb->len;
@@ -40,9 +33,13 @@ camera_fb_t* ProcessorDifference::iterate() {
 
     memset(same, true, fb->len);
 
+    // iterate over all image
     for (size_t iter = 0; iter < fb->len; ++iter) {
+        // check whether pixel changed
         if ( (fb->buf[iter] > prev[iter] && fb->buf[iter] - prev[iter] > threshold) ||
              (fb->buf[iter] < prev[iter] && prev[iter] - fb->buf[iter] > threshold) ) {
+
+            // set all pixels in radius 'r' as changed
             for (int i = -r; i <= r; ++i) {
                 for (int j = -r; j <= r; ++j) {
                     if (iter + i * width + j < len)
@@ -55,7 +52,7 @@ camera_fb_t* ProcessorDifference::iterate() {
         prev[iter] = fb->buf[iter];
     }
 
-    // n^2
+    // group all changed pixels
     for (size_t i = 0; i < len; i += 1) {
         if (!same[i]) {
             dfs(fb, i, false);
@@ -63,51 +60,13 @@ camera_fb_t* ProcessorDifference::iterate() {
         }
     }
 
-    // n^2
+    // group all changed groups and display them
     for (size_t i = 0; i < len; i += 1) {
         if (!same[i]) {
             dfs(fb, i, true);
             i += r;
         }
     }
-
-    if (!fb)
-        return nullptr;
-
-    memset(same, true, fb->len);
-
-    for (size_t iter = 0; iter < fb->len; ++iter) {
-        if ( (fb->buf[iter] > prev[iter] && fb->buf[iter] - prev[iter] > threshold) ||
-             (fb->buf[iter] < prev[iter] && prev[iter] - fb->buf[iter] > threshold) ) {
-            for (int i = -r; i <= r; ++i) {
-                for (int j = -r; j <= r; ++j) {
-                    if (iter + i * width + j < len)
-                        same[iter + i * width + j] = false;
-                    
-                }
-            }
-        }
-
-        prev[iter] = fb->buf[iter];
-    }
-
-    // n^2
-    for (size_t i = 0; i < len; i += 1) {
-        if (!same[i]) {
-            dfs(fb, i, false);
-            i += r;
-        }
-    }
-
-    // n^2
-    for (size_t i = 0; i < len; i += 1) {
-        if (!same[i]) {
-            dfs(fb, i, true);
-            i += r;
-        }
-    }
-
-    cam.free_picture();
 
     return fb;
 }
@@ -124,6 +83,7 @@ void ProcessorDifference::dfs(camera_fb_t *fb, size_t orPos, bool draw) {
     std::pair<size_t, size_t> bottomRight{0, 0};
     std::pair<size_t, size_t> topLeft{width - 1, height - 1};
 
+    // classical dfs
     while (!q.empty()) {
         auto pos = q.back();
         q.pop();
@@ -134,12 +94,14 @@ void ProcessorDifference::dfs(camera_fb_t *fb, size_t orPos, bool draw) {
         auto top = pos / width;
         auto left = pos % width;
 
+        // detect top left and bottom right pixels of group
         if (left < topLeft.first) topLeft.first = left;
         if (left > bottomRight.first) bottomRight.first = left;
 
         if (top < topLeft.second) topLeft.second = top;
         if (top > bottomRight.second) bottomRight.second = top;
 
+        // add to queue all neighbour pixels
         for (int i = -1; i <= 1; ++i) {
             for (int j = -1; j <= 1; ++j) {
                 if (i == 0 && j == 0) continue;
@@ -166,7 +128,7 @@ void ProcessorDifference::dfs(camera_fb_t *fb, size_t orPos, bool draw) {
         if ((bottomRight.first - topLeft.first) <= r || (bottomRight.second - topLeft.second) <= r)
             return;
 
-        // draw white rectangular
+        // group for the dfs
         for (auto i = topLeft.first; i <= bottomRight.first; ++i) {
             same[topLeft.second * width + i] = false;
             same[bottomRight.second * width + i] = false;
