@@ -5,6 +5,7 @@ idf_component_register(SRCS
 
         "ProcessorMedianDif.cpp"
         "ProcessorDifference.cpp"
+        "ProcessorDifferenceSimple.cpp"
         "ProcessorAverageDif.cpp"
         
         "WifiController.cpp"
