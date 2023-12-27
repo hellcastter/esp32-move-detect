@@ -24,6 +24,12 @@ ProcessorDifference::ProcessorDifference(Camera *camera) {
     cam->free_picture();
 }
 
+
+ProcessorDifference::~ProcessorDifference() {
+    delete[] prev;
+    delete[] same;
+}
+
 camera_fb_t* ProcessorDifference::iterate() {
     auto fb = cam->take_picture();
 
@@ -55,7 +61,7 @@ camera_fb_t* ProcessorDifference::iterate() {
     // group all changed pixels
     for (size_t i = 0; i < len; i += 1) {
         if (!same[i]) {
-            rects.emplace_back( dfs(fb, i, false) );
+            rects.emplace_back( dfs(i) );
             i += r;
         }
     }
@@ -67,12 +73,7 @@ camera_fb_t* ProcessorDifference::iterate() {
     return fb;
 }
 
-ProcessorDifference::~ProcessorDifference() {
-    delete[] prev;
-    delete[] same;
-}
-
-Rect ProcessorDifference::dfs(camera_fb_t *fb, size_t orPos, bool draw) {
+Rect ProcessorDifference::dfs(size_t orPos) {
     std::queue<size_t> q;
     q.push(orPos);
 
@@ -117,8 +118,6 @@ std::vector<Rect> ProcessorDifference::merge_rects(std::vector<Rect> rects) {
         return a.first.x < b.first.x;
     });
 
-//    ESP_LOGE(TAG, "%d %d", rects[0].first.x, rects[10].first.x);
-
     std::vector<Rect> result;
 
     for (int i = 0; i < rects.size(); ++i) {
@@ -148,7 +147,7 @@ std::vector<Rect> ProcessorDifference::merge_rects(std::vector<Rect> rects) {
             }
         }
 
-        rect.merged = true;
+        rects[i].merged = true;
         result.emplace_back(rect);
     }
 

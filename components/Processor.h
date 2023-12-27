@@ -8,6 +8,18 @@
 #include <cstdint>
 #include "esp_camera.h"
 
+struct Point {
+    size_t x, y;
+
+    Point(size_t x, size_t y) : x(x), y(y) {}
+};
+
+struct Rect {
+    Point first, second;
+    bool merged = false;
+    Rect (Point f, Point s) : first(f), second(s) {}
+};
+
 class Processor {
 public:
     virtual camera_fb_t* iterate() = 0;

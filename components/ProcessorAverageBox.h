@@ -25,8 +25,11 @@ private:
     uint8_t* prev [LAST_FRAMES_NUM];
     int r = 5;
 
-    void dfs(camera_fb_t* fb, size_t pos, bool draw);
     uint8_t averageValue(size_t pixIdx);
+
+    Rect dfs(size_t pos);
+    std::vector<Rect> merge_rects(std::vector<Rect> rects);
+    void draw(const std::vector<Rect>& rects, camera_fb_t* fb);
 public:
     ProcessorAverageBox(Camera* camera);
     camera_fb_t* iterate() override;
