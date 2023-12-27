@@ -9,4 +9,4 @@ sdkconfig.old
 dependencies.lock
 cmake-*
 
-./components/WifiCredits.h
+components/WifiCredits.h
