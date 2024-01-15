@@ -2,7 +2,10 @@
 
 Detect movements on ESP32 using camera
 
-![Example with Cars](./examples/cars.gif)
+<p align="center">
+    <img src="./examples/cars.gif" alt="Example with Cars" width="500">
+</p>
+
 
 ## Team
 
@@ -70,10 +73,17 @@ There are 7 urls you can go:
 
 ## Examples
 
-![Example with Cars](./examples/cafeterium.gif)
-![Example with Cars](./examples/cafeterium2.gif)
+<p align="center">
+    <img src="./examples/cafeterium.gif" alt="Example with people" width="500">
+</p>
 
-<img src="./examples/hand.gif" alt="Example with hand" style="display: block; margin: 0 auto;">
+<p align="center">
+    <img src="./examples/cafeterium2.gif" alt="Example with people 2" width="500">
+</p>
+
+<p align="center">
+    <img src="./examples/hand.gif" alt="Example with hand" width="400">
+</p>
 
 ## Additional information
 
