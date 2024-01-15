@@ -32,10 +32,11 @@ extern "C" void app_main(void)
         Processor* procMed = new ProcessorMedianDif(cam);
         Processor* procMedBox = new ProcessorMedianBox(cam);
 
-        server.add_url("/simple_dfs", proc_dfs);
         server.add_url("/simple", proc_simple);
         server.add_url("/average", procAvg);
         server.add_url("/median", procMed);
+        
+        server.add_url("/simpleBox", proc_dfs);
         server.add_url("/averageBox", procAngBox);
         server.add_url("/medianBox", procMedBox);
 
