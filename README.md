@@ -2,6 +2,8 @@
 
 Detect movements on ESP32 using camera
 
+![Example with Cars](./examples/cars.gif)
+
 ## Team
 
 Mentors:
@@ -36,6 +38,8 @@ Also you need to install esp-idf of version 4.4. You can find instructions [here
 
 Open *components/Camera.config.h* and change settings to your own. You could change wifi credentials in file *components/WifiCredits.c*. Also, you might find useful to change settings in *components/Camera.h*. More about camera settings you can find [here](https://github.com/espressif/esp32-camera).
 
+Also, do not forget to turn on PSRAM in *idf.py menuconfig*. Go to *Component config -> ESP32-specific -> Support for external, SPI-connected RAM* and turn it on.
+
 ## Upload
 
 After that you are ready to go. Build and flash code to your board using interface of Esp-IDF in VS Code
@@ -51,7 +55,9 @@ idf.py monitor
 
 In you terminal you will find IP address of your board. Open it in your browser. If you see only black screen, try to change settings in *components/Camera.config.h*.
 
-There are 6 urls you can go:
+There are 7 urls you can go:
+
+- / - just video from the camera.
 
 - /simple - simple detection of movements
 - /simpleBox - simple detection of movements. Also draws a box around the detected object.
@@ -63,6 +69,11 @@ There are 6 urls you can go:
 - /medianBox - median detection of movements (takes n frames and calculates median). Also draws a box around the detected object.
 
 ## Examples
+
+![Example with Cars](./examples/cafeterium.gif)
+![Example with Cars](./examples/cafeterium2.gif)
+
+<img src="./examples/hand.gif" alt="Example with hand" style="display: block; margin: 0 auto;">
 
 ## Additional information
 
