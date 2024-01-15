@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "ProcessorDifferenceSimple.h"
 
-const char* TAG = "ProcessorDifferenceSimpleTAG";
+const char* PCTag = "ProcessorDifferenceSimpleTAG";
 
 ProcessorDifferenceSimple::ProcessorDifferenceSimple(Camera *camera) {
     cam = camera;
@@ -15,7 +15,7 @@ ProcessorDifferenceSimple::ProcessorDifferenceSimple(Camera *camera) {
     prev = new uint8_t[fb->len];
     std::copy(fb->buf, fb->buf + fb->len, prev);
 
-    ESP_LOGI(TAG, "ProcessorDifferenceSimple was inited");
+    ESP_LOGI(PCTag, "ProcessorDifferenceSimple was inited");
 
     cam->free_picture();
 }
