@@ -1,6 +1,10 @@
 # ESP32: Detect movements
 
-Detect movements on ESP32 using camera
+This project is created for the Principles of Computer Organization course. The main idea is inspired by the war in Ukraine. Since the full-scale invasion, the kamikaze drones gained high popularity among both sides. Due to this, there is plenty of electronic warfare that disables the drones. Electronic warfare blocks signals from the operator, and the drone is lost without any information.
+
+To prevent this, we had an idea to install an embedded board with a camera on a drone and develop a SoC that can detect movements, and direct the drone towards a specific goal. Currently, we use ESP32-CAM as a cheap development board. It has pretty low productivity but still can handle low-resolution video. In the future, with minor changes, more powerful boards can be used.
+
+This project is dedicated to identifying moving targets with the help of ESP32-Cam. Full report you can find [here](https://www.overleaf.com/read/vbmnwngxpxhp#0fb4d9).
 
 <p align="center">
     <img src="./examples/cars.gif" alt="Example with Cars" width="500">
