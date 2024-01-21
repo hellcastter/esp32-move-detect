@@ -1,4 +1,4 @@
-# ESP32: Detect movements
+# ESP32: Detect movements ![Build status](https://github.com/hellcastter/esp32-move-detect/actions/workflows/ci.yaml/badge.svg)
 
 This project is created for the Principles of Computer Organization course. The main idea is inspired by the war in Ukraine. Since the full-scale invasion, the kamikaze drones gained high popularity among both sides. Due to this, there is plenty of electronic warfare that disables the drones. Electronic warfare blocks signals from the operator, and the drone is lost without any information.
 
