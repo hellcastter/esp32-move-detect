@@ -1,4 +1,4 @@
-name: Detect Movements CI
+name: Build Status
 
 on:
   push:
