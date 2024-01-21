@@ -87,4 +87,4 @@ There are 7 urls you can go:
 
 ## Additional information
 
-Some more information you could find [here](https://www.overleaf.com/project/658bebfe3529efa1720b52e6) and [here](https://www.canva.com/design/DAF4Kgk4rFQ/3g4ogLKe2gLSv7kS-HdqwA/view).
+Some more information you could find [here](https://www.overleaf.com/read/vbmnwngxpxhp#0fb4d9) and [here](https://www.canva.com/design/DAF4Kgk4rFQ/3g4ogLKe2gLSv7kS-HdqwA/view).
